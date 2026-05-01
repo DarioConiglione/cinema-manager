@@ -20,6 +20,8 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
 
+        System.out.println("Utente trovato! Password nel DB: " + user.getPassword());
+
         return new DatabaseUserDetails(user);
     }
 }

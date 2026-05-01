@@ -15,6 +15,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+        private final DatabaseUserDetailsService userDetailsService;
+
+        public SecurityConfig(DatabaseUserDetailsService userDetailsService) {
+                this.userDetailsService = userDetailsService;
+        }
+
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
@@ -35,13 +41,14 @@ public class SecurityConfig {
                                                 .permitAll())
                                 // 4. Disattivazione CORS e CSRF (essenziale per la futura integrazione React)
                                 .cors(cors -> cors.disable())
-                                .csrf(csrf -> csrf.disable());
+                                .csrf(csrf -> csrf.disable())
+                                .authenticationProvider(authenticationProvider());
 
                 return http.build();
         }
 
-        @Bean
-        public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+        @Bean // UserDetailsService userDetailsService dentro authenticationProvider() magari?
+        public DaoAuthenticationProvider authenticationProvider() {
                 DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
                 authProvider.setPasswordEncoder(passwordEncoder());
                 return authProvider;
