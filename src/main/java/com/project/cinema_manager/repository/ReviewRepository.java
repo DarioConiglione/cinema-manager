@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.project.cinema_manager.model.Review;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
-    List<Review> findByFilmId(Long filmId);
+    List<Review> findByFilmId(Integer filmId);
 }
