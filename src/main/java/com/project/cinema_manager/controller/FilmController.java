@@ -24,6 +24,14 @@ public class FilmController {
         return "admin/index"; // Cercherà il file src/main/resources/templates/admin/index.html
     }
 
+    // 1. SHOW: Visualizza i dettagli di un singolo film
+    @GetMapping("/show/{id}")
+    public String show(@PathVariable Integer id, Model model) {
+        Film film = filmRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Film non trovato"));
+        model.addAttribute("film", film);
+        return "admin/show";
+    }
+
     // 2. CREATE (Form): Mostra il form per aggiungere un nuovo film
     @GetMapping("/create")
     public String create(Model model) {
@@ -40,7 +48,7 @@ public class FilmController {
 
     // 4. DELETE: Rimuove un film tramite ID
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
+    public String delete(@PathVariable("id") Integer id) {
         filmRepository.deleteById(id);
         return "redirect:/admin/films";
     }

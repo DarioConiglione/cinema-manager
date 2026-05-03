@@ -2,41 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Backoffice Cinema</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Backoffice - Lista Film</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Gestione Film</h1>
-        <a th:href="@{/admin/films/create}" class="btn btn-primary">Aggiungi Film</a>
-    </div>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">Cinema Manager Admin</span>
+        </div>
+    </nav>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Titolo</th>
-                <th>Regista</th>
-                <th>Anno</th>
-                <th>Azioni</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="film : ${films}">
-                <td th:text="${film.id}"></td>
-                <td th:text="${film.title}"></td>
-                <td th:text="${film.director}"></td>
-                <td th:text="${film.releaseYear}"></td>
-                <td>
-                    <form th:action="@{/admin/films/delete/{id}(id=${film.id})}" method="post">
-                        <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Sei sicuro?')">Elimina</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <main class="container">
+        <div class="card shadow p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Catalogo Film</h2>
+                <a th:href="@{/admin/films/create}" class="btn btn-success">+ Nuovo Film</a>
+            </div>
+
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Titolo</th>
+                        <th>Recensioni</th>
+                        <th class="text-center">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="film : ${films}">
+                        <td th:text="${film.id}"></td>
+                        <td>
+                            <strong th:text="${film.title}"></strong>
+                        </td>
+                        <td th:text="${film.reviews.size()}">0</td>
+                        <td class="text-center">
+                            <a th:href="@{/admin/films/show/{id}(id=${film.id})}"
+                                class="btn btn-sm btn-info text-white">Dettagli</a>
+                            <a th:href="@{/admin/films/edit/{id}(id=${film.id})}"
+                                class="btn btn-sm btn-warning">Modifica</a>
+                            <a th:href="@{/admin/films/delete/{id}(id=${film.id})}" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Sei sicuro di voler eliminare questo film?')">Elimina</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 
 </html>
