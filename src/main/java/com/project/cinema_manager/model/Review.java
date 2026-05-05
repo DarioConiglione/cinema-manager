@@ -3,6 +3,7 @@ package com.project.cinema_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -20,6 +21,7 @@ public class Review {
     private int rating;
 
     // Relazione N-1: Molte recensioni appartengono a un solo film
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "film_id", nullable = false)
     private Film film;

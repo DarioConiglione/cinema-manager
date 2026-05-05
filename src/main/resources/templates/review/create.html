@@ -15,13 +15,13 @@
                     <h2 class="mb-0">Nuova Recensione per <span th:text="${film.title}"></span></h2>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/admin/films/show/{id}/reviews/store(id=${film.id})}" th:object="${review}"
-                        method="post">
+                    <form th:action="@{/admin/films/show/{filmId}/reviews/store(filmId=${film.id})}"
+                        th:object="${review}" method="post">
 
                         <div class="mb-3">
-                            <label for="author" class="form-label">Titolo della recensione</label>
+                            <label for="author" class="form-label">Autore / Titolo</label>
                             <input type="text" id="author" th:field="*{author}" class="form-control" required
-                                placeholder="Inserisci il titolo della recensione...">
+                                placeholder="Inserisci l'autore o un titolo...">
                         </div>
 
                         <div class="mb-3">
