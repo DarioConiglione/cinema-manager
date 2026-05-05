@@ -15,20 +15,21 @@ public class FilmRestController {
     @Autowired
     private FilmRepository filmRepository;
 
-    // Lista film per la home di React
+    // Index: Lista di tutti i film
     @GetMapping
-    public List<Film> getAll() {
+    public List<Film> index() {
         return filmRepository.findAll();
     }
 
-    // Dettaglio singolo film + sue recensioni
+    // Show: Dettagli di un singolo film
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getById(@PathVariable Integer id) {
+    public ResponseEntity<Film> show(@PathVariable Integer id) {
         return filmRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // POST: Creazione
     @PostMapping
     public Film create(@RequestBody Film film) {
         return filmRepository.save(film);

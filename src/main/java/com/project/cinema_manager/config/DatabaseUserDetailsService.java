@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.cinema_manager.model.User;
 import com.project.cinema_manager.repository.UserRepository;
+import java.util.Optional;
 
 @Service
 public class DatabaseUserDetailsService implements UserDetailsService {
@@ -17,11 +18,13 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
+        // Seguendo le slide: usiamo Optional e verifichiamo la presenza
+        Optional<User> user = userRepository.findByUsername(username);
 
-        System.out.println("Utente trovato! Password nel DB: " + user.getPassword());
-
-        return new DatabaseUserDetails(user);
+        if (user.isPresent()) {
+            return new DatabaseUserDetails(user.get());
+        } else {
+            throw new UsernameNotFoundException("Username not found");
+        }
     }
 }

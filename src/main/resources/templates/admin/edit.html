@@ -19,6 +19,17 @@
             </div>
 
             <div class="mb-3">
+                <label for="director" class="form-label">Regista</label>
+                <input type="text" class="form-control" id="director" th:field="*{director}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="releaseYear" class="form-label">Anno di uscita</label>
+                <input type="number" class="form-control" id="releaseYear" th:field="*{releaseYear}" required
+                    min="1895">
+            </div>
+
+            <div class="mb-3">
                 <label for="description" class="form-label">Descrizione</label>
                 <textarea class="form-control" id="description" th:field="*{description}" rows="5"></textarea>
             </div>

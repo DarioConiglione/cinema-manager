@@ -17,7 +17,7 @@ public class Review {
     @Column(length = 500)
     private String content;
 
-    private int rating; // Es: da 1 a 5
+    private int rating;
 
     // Relazione N-1: Molte recensioni appartengono a un solo film
     @ManyToOne

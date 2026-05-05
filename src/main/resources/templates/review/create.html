@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aggiungi Recensione</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">Nuova Recensione per <span th:text="${film.title}"></span></h2>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/films/show/{id}/reviews/store(id=${film.id})}" th:object="${review}"
+                        method="post">
+
+                        <div class="mb-3">
+                            <label for="author" class="form-label">Titolo della recensione</label>
+                            <input type="text" id="author" th:field="*{author}" class="form-control" required
+                                placeholder="Inserisci il titolo della recensione...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Valutazione (da 1 a 5)</label>
+                            <input type="number" id="rating" th:field="*{rating}" class="form-control" required min="1"
+                                max="5">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Descrizione</label>
+                            <textarea id="content" th:field="*{content}" class="form-control" rows="4" required
+                                placeholder="Scrivi la tua recensione qui..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a th:href="@{/admin/films/show/{id}(id=${film.id})}" class="btn btn-secondary">Annulla</a>
+                            <button type="submit" class="btn btn-success">Salva Recensione</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

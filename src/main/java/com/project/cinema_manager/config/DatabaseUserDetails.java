@@ -8,27 +8,41 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.project.cinema_manager.model.User;
+import java.util.Set;
+import java.util.HashSet;
 
 public class DatabaseUserDetails implements UserDetails {
-    private final User user;
+
+    private final Integer id;
+    private final String username;
+    private final String password;
+    private final Set<GrantedAuthority> authorities;
 
     public DatabaseUserDetails(User user) {
-        this.user = user;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+
+        // Seguendo le slide: creiamo le autorità dai ruoli dell'utente
+        this.authorities = new HashSet<>();
+        // Se il tuo modello User ha un singolo ruolo (stringa), usiamo quello
+        // Se ha un Set<Role>, si usa il ciclo for come nelle slide
+        this.authorities.add(new SimpleGrantedAuthority(user.getRole()));
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override
@@ -49,5 +63,9 @@ public class DatabaseUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

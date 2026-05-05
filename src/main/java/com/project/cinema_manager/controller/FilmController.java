@@ -46,6 +46,22 @@ public class FilmController {
         return "redirect:/admin/films";
     }
 
+    // 5. UPDATE (Form): Mostra il form per modificare un film
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        Film film = filmRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Film non trovato"));
+        model.addAttribute("film", film);
+        return "admin/edit";
+    }
+
+    // 6. UPDATE (Action): Aggiorna i dati del film nel database
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable Integer id, @ModelAttribute("film") Film film) {
+        film.setId(id); // Assicura che l'ID sia corretto
+        filmRepository.save(film);
+        return "redirect:/admin/films";
+    }
+
     // 4. DELETE: Rimuove un film tramite ID
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {

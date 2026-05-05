@@ -3,11 +3,10 @@ package com.project.cinema_manager.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,59 +14,37 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-        private final DatabaseUserDetailsService userDetailsService;
-
-        public SecurityConfig(DatabaseUserDetailsService userDetailsService) {
-                this.userDetailsService = userDetailsService;
+        @Bean
+        public DatabaseUserDetailsService userDetailsService() {
+                return new DatabaseUserDetailsService();
         }
 
         @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                http
-                                // 1. Configurazione permessi con Lambda
-                                .authorizeHttpRequests(requests -> requests
-                                                .requestMatchers("/admin/**").hasRole("ADMIN") // Solo admin nel
-                                                                                               // backoffice
-                                                .requestMatchers("/", "/api/**", "/css/**", "/js/**").permitAll() // API
-                                                                                                                  // e
-                                                                                                                  // asset
-                                                                                                                  // liberi
-                                                .anyRequest().authenticated())
-                                // 2. Form di Login con default (utilizza la pagina di default di Spring)
-                                .formLogin(Customizer.withDefaults())
-                                // 3. Logout
-                                .logout(logout -> logout
-                                                .logoutSuccessUrl("/")
-                                                .permitAll())
-                                // 4. Disattivazione CORS e CSRF (essenziale per la futura integrazione React)
-                                .cors(cors -> cors.disable())
-                                .csrf(csrf -> csrf.disable())
-                                .authenticationProvider(authenticationProvider());
-
-                return http.build();
+        public PasswordEncoder passwordEncoder() {
+                return PasswordEncoderFactories.createDelegatingPasswordEncoder();
         }
 
-        @Bean // UserDetailsService userDetailsService dentro authenticationProvider() magari?
+        @Bean
         public DaoAuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+                // Nuova Sintassi: UserDetailsService passato direttamente nel costruttore
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
                 authProvider.setPasswordEncoder(passwordEncoder());
                 return authProvider;
         }
 
-        /*
-         * @Bean
-         * public UserDetailsService userDetailsService() {
-         * UserDetails admin = User.builder()
-         * .username("admin")
-         * .password(passwordEncoder().encode("password"))
-         * .roles("ADMIN")
-         * .build();
-         * return new InMemoryUserDetailsManager(admin);
-         * }
-         */
-
         @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http.csrf(csrf -> csrf.disable()) // Mantengo la disattivazione CSRF per i tuoi test
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/admin/**").hasAuthority("ADMIN") // Come da slide
+                                                .requestMatchers("/", "/api/**", "/css/**", "/js/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form.permitAll())
+                                .logout(logout -> logout.permitAll());
+
+                // Colleghiamo l'authentication provider
+                http.authenticationProvider(authenticationProvider());
+
+                return http.build();
         }
 }
