@@ -38,12 +38,16 @@
                         </td>
                         <td th:text="${film.reviews.size()}">0</td>
                         <td class="text-center">
-                            <a th:href="@{/admin/films/show/{id}(id=${film.id})}"
-                                class="btn btn-sm btn-info text-white">Dettagli</a>
-                            <a th:href="@{/admin/films/edit/{id}(id=${film.id})}"
-                                class="btn btn-sm btn-warning">Modifica</a>
-                            <a th:href="@{/admin/films/delete/{id}(id=${film.id})}" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Sei sicuro di voler eliminare questo film?')">Elimina</a>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <a th:href="@{/admin/films/show/{id}(id=${film.id})}"
+                                    class="btn btn-sm btn-info text-white">Dettagli</a>
+                                <a th:href="@{/admin/films/edit/{id}(id=${film.id})}"
+                                    class="btn btn-sm btn-warning">Modifica</a>
+                                <form th:action="@{/admin/films/delete/{id}(id=${film.id})}" method="POST" class="m-0"
+                                    onsubmit="return confirm('Sei sicuro di voler cancellare questo film?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Cancella</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

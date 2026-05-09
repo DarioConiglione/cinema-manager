@@ -1,7 +1,9 @@
 package com.project.cinema_manager.controller;
 
 import com.project.cinema_manager.model.Film;
+import com.project.cinema_manager.model.Review;
 import com.project.cinema_manager.repository.FilmRepository;
+import com.project.cinema_manager.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/films")
-@CrossOrigin(origins = "http://localhost:5173") // Permette a React (Vite) di chiamare Spring
 public class FilmRestController {
 
     @Autowired
     private FilmRepository filmRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     // Index: Lista di tutti i film
     @GetMapping
@@ -53,5 +57,15 @@ public class FilmRestController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // POST: Aggiungi una recensione a un film specifico
+    @PostMapping("/{id}/reviews")
+    public ResponseEntity<Review> addReview(@PathVariable Integer id, @RequestBody Review review) {
+        return filmRepository.findById(id).map(film -> {
+            review.setFilm(film); // Collega la recensione al film trovato
+            Review savedReview = reviewRepository.save(review);
+            return ResponseEntity.ok(savedReview);
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
